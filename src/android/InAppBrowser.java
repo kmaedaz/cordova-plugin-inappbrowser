@@ -110,6 +110,7 @@ public class InAppBrowser extends CordovaPlugin {
     private final static int FILECHOOSER_REQUESTCODE = 1;
     private final static int FILECHOOSER_REQUESTCODE_LOLLIPOP = 2;
 
+	
     /**
      * Executes the request and returns PluginResult.
      *
@@ -593,6 +594,7 @@ public class InAppBrowser extends CordovaPlugin {
             @SuppressLint("NewApi")
             public void run() {
 
+            	
                 // CB-6702 InAppBrowser hangs when opening more than one instance
                 if (dialog != null) {
                     dialog.dismiss();
@@ -605,6 +607,11 @@ public class InAppBrowser extends CordovaPlugin {
                 dialog.setCancelable(true);
                 dialog.setInAppBroswer(getInAppBrowser());
 
+				// add
+				dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//				dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            	
+            	
                 // Main container layout
                 LinearLayout main = new LinearLayout(cordova.getActivity());
                 main.setOrientation(LinearLayout.VERTICAL);
@@ -818,7 +825,8 @@ public class InAppBrowser extends CordovaPlugin {
 
                 // Add the back and forward buttons to our action button container layout
                 actionButtonContainer.addView(back);
-                actionButtonContainer.addView(forward);
+
+            	actionButtonContainer.addView(forward);
 
                 // Add the views to our toolbar
                 toolbar.addView(actionButtonContainer);
@@ -831,6 +839,18 @@ public class InAppBrowser extends CordovaPlugin {
                     main.addView(toolbar);
                 }
 
+            	// add
+					
+				 int uiOptions = 
+						View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+						| View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+						| View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+						| View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+						| View.SYSTEM_UI_FLAG_FULLSCREEN
+						| View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+				main.setSystemUiVisibility(uiOptions);
+
+            	
                 // Add our webview to our main view/layout
                 main.addView(inAppWebView);
 
@@ -1045,10 +1065,6 @@ public class InAppBrowser extends CordovaPlugin {
             } else {
                 CookieSyncManager.getInstance().sync();
             }
-
-            // https://issues.apache.org/jira/browse/CB-11248
-            view.clearFocus();
-            view.requestFocus();
 
             try {
                 JSONObject obj = new JSONObject();
